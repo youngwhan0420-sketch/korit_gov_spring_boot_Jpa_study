@@ -1,17 +1,13 @@
 package com_korit.jpa_study.entity;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jdk.jfr.Enabled;
-import jdk.jfr.Name;
-import jdk.jfr.Threshold;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -19,16 +15,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Enabled
-@Table(name = "post_tb")
-
-public class Post {
+@Entity
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 키가 생성되는 것을 가져오는 옵션
-    private Integer postId;
-    private String title;
-    private String content;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+    private String username;
+    private String password;
+    private String email;
     private LocalDateTime createDt;
     private LocalDateTime updateDt;
 }
+
+/*
+* 추가(username 중복검사)
+* 조회 - 전체조회, userId단건조회, username단건조회
+* 수정 - username 또는 password
+* 삭제
+* */

@@ -13,15 +13,4 @@ public class EditPostReqDto {
     private Integer postId;
     private String title;
     private String content;
-
-    public Post toEntity(Integer userId, LocalDateTime createDt) {
-        return Post.builder()
-                .userId(userId)
-                .postId(postId)
-                .title(title)
-                .content(content)
-                .createDt(createDt)
-                .updateDt(LocalDateTime.now())
-                .build();
-    }
 }

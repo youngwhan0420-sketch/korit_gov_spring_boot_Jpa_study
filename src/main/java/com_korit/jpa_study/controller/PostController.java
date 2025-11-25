@@ -2,6 +2,7 @@ package com_korit.jpa_study.controller;
 
 import com_korit.jpa_study.dto.AddPostReqDto;
 import com_korit.jpa_study.dto.EditPostReqDto;
+import com_korit.jpa_study.repository.PostRepository;
 import com_korit.jpa_study.service.PostService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/post")
 public class PostController {
-
     @Autowired
     private PostService postService;
+    @Autowired
+    private PostRepository postRepository;
 
     @PostMapping("/add")
     public ResponseEntity<?> addPost(@RequestBody AddPostReqDto addPostReqDto) {
@@ -31,16 +33,24 @@ public class PostController {
     public ResponseEntity<?> getPostAll() {
         return ResponseEntity.ok(postService.getPostAll());
     }
+
     @GetMapping("/{postId}")
-    public ResponseEntity getPostByPostId(@PathVariable Integer postId) {
+    public ResponseEntity<?> getPostByPostId(@PathVariable Integer postId) {
         return ResponseEntity.ok(postService.getPostByPostId(postId));
     }
+
     @PostMapping("/edit")
     public ResponseEntity<?> editPost(@RequestBody EditPostReqDto editPostReqDto) {
         return ResponseEntity.ok(postService.editPost(editPostReqDto));
     }
-    @PostMapping("/remove")
-    public ResponseEntity<?> removePost(@RequestParam Integer postId) {
+
+    @PostMapping("/delete/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Integer postId) {
         return ResponseEntity.ok(postService.removePost(postId));
+    }
+
+    @GetMapping("/get/user/{userId}")
+    public ResponseEntity<?> getPostByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(postService.getPostByUserId(userId));
     }
 }
