@@ -4,7 +4,9 @@ import com_korit.jpa_study.dto.AddPostReqDto;
 import com_korit.jpa_study.dto.ApiRespDto;
 import com_korit.jpa_study.dto.EditPostReqDto;
 import com_korit.jpa_study.entity.Post;
+import com_korit.jpa_study.entity.User;
 import com_korit.jpa_study.repository.PostRepository;
+import com_korit.jpa_study.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +18,21 @@ import java.util.Optional;
 public class PostService {
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public ApiRespDto<?> addPost(AddPostReqDto addPostReqDto) {
+        Optional<User> foundUser = userRepository.findById(addPostReqDto.getUserId());
+        if (foundUser.isPresent()) {
+            return new ApiRespDto<>("failed", "중복된 title", addPostReqDto.getTitle());
+        }
         Optional<Post> foundPost = postRepository.findByTitle(addPostReqDto.getTitle());
-
         if (foundPost.isPresent()) {
             return new ApiRespDto<>("failed", "중복된 title", addPostReqDto.getTitle());
         }
-
         return new ApiRespDto<>("success", "게시글 추가 성공", postRepository.save(addPostReqDto.toEntity()));
     }
+
 
     public ApiRespDto<?> getPostAll() {
         return new ApiRespDto<>("success", "전체 조회", postRepository.findAll());
@@ -47,14 +54,12 @@ public class PostService {
         if (foundPost.isEmpty()) {
             return new ApiRespDto<>("failed", "존재하지 않는 게시글", null);
         }
-
         Post post = foundPost.get();
         post.setTitle(editPostReqDto.getTitle());
         post.setContent(editPostReqDto.getContent());
         post.setUpdateDt(LocalDateTime.now());
         return new ApiRespDto<>("success", "수정 성공", postRepository.save(post));
     }
-
     public ApiRespDto<?> removePost(Integer postId) {
         Optional<Post> foundPost = postRepository.findById(postId);
         // 삭제하기 전에 있는지 확인하기
